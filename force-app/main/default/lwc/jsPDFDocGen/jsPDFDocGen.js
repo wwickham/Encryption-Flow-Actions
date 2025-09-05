@@ -72,32 +72,47 @@ export default class JsPDFDocGen extends LightningElement {
       doc.setFontSize(12);
       doc.text("Completion of Approved Continuing Teacher and Leader Education (CTLE) Hour(s) Certificate", centerX, y, { align: "center" });
 
-      y += 5;
+      y += 10;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.text("All CTLE must be completed with Approved Sponsors and be reported using this form, or an alternative form/format that captures the same information that is requested on this form, in addition to any electronic reporting requirements.", x + 2, y, { align: "left", maxWidth: 200 });
 
-      const colWidths = [60, 60, pageWidth - 20 - 120]; // First row columns
-      const rowHeight = 12;
+      const colWidths = [(pageWidth - 20) * 0.4, (pageWidth - 20) * 0.4, (pageWidth - 20) * 0.20]; // First row columns
+      const rowHeight = 9;
 
       let startY = y + 20;
 
       // --- Section Header ---
       doc.setFillColor(200, 220, 255); // light blue background
       doc.rect(10, startY, pageWidth - 20, 6, "F"); // filled rect
+      doc.rect(10, startY, pageWidth - 20, 6);
       doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
       doc.text("Section I", 12, startY + 4);
 
       startY += 6;
 
+      const labels = ["First Name:", "Last Name:", "Middle Initial:"];
+      const values = [this.firstName, this.lastName, this.middleInitial];
+
       // --- First Row (3 columns) ---
       doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
       x = 10;
-      ["First Name:", "Last Name:", "Middle Initial:"].forEach((label, i) => {
+      labels.forEach((label, i) => {
         doc.rect(x, startY, colWidths[i], rowHeight); // border
-        doc.text(label, x + 2, startY + 8);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.text(label, x + 2, startY + 3);
+
+        const labelWidth = doc.getTextWidth(label);
+
+        doc.setFontSize(14);
+        doc.text(values[i], x + 2 + labelWidth + 2, startY + 6);
+
         x += colWidths[i];
       });
+
       startY += rowHeight;
 
       // --- Second Row (2 columns) ---
@@ -106,7 +121,7 @@ export default class JsPDFDocGen extends LightningElement {
       ["Date of Birth:", "Last 4 Digits of the Social Security Number:"].forEach(
         (label, i) => {
           doc.rect(x, startY, secondRowCols[i], rowHeight); // border
-          doc.text(label, x + 2, startY + 8);
+          doc.text(label, x + 2, startY + 3);
           x += secondRowCols[i];
         }
       );
@@ -116,6 +131,10 @@ export default class JsPDFDocGen extends LightningElement {
       console.error('jsPDF library not initialized');
     }
   }
+
+firstName = "John";
+lastName = "Smith";
+middleInitial = "Q";
 
   drawField(label, value, doc) {
     doc.rect(20, y, this.fieldWidth, this.fieldHeight); // outer rectangle
