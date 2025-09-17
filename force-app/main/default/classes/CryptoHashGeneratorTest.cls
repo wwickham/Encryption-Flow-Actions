@@ -1,5 +1,5 @@
 @isTest
-private class EncryptionFlowActionsTest {
+private class CryptoHashGeneratorTest {
 
     static final String INPUT_STRING = 'teststring123';
 
